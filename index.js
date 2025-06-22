@@ -1,3 +1,4 @@
+const http = require('http');
 const WebSocket = require('ws');
 require('dotenv').config();
 
@@ -9,11 +10,14 @@ if (!DID_API_KEY) {
   process.exit(1);
 }
 
-const server = new WebSocket.Server({ port: PORT }, () => {
-  console.log(`Proxy WebSocket server listening on port ${PORT}`);
+const server = http.createServer((req, res) => {
+  res.writeHead(200);
+  res.end("D-ID WebSocket Proxy is running.\n");
 });
 
-server.on('connection', (client, req) => {
+const wss = new WebSocket.Server({ server });
+
+wss.on('connection', (client, req) => {
   const urlParams = new URLSearchParams(req.url.replace('/?', ''));
   const streamId = urlParams.get('stream_id');
 
@@ -30,17 +34,14 @@ server.on('connection', (client, req) => {
     }
   });
 
-  // Forward client -> D-ID
   client.on('message', (message) => {
     didSocket.send(message);
   });
 
-  // Forward D-ID -> client
   didSocket.on('message', (message) => {
     client.send(message);
   });
 
-  // Handle errors
   didSocket.on('error', (err) => {
     console.error('D-ID WebSocket error:', err);
     client.close();
@@ -49,4 +50,8 @@ server.on('connection', (client, req) => {
   client.on('close', () => {
     didSocket.close();
   });
+});
+
+server.listen(PORT, () => {
+  console.log(`Proxy server listening on port ${PORT}`);
 });
