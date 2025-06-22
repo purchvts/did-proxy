@@ -1,0 +1,19 @@
+# Node.js dependencies
+node_modules/
+
+# Environment variables
+.env
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+
+# Render build cache (just in case)
+render-build-cache/
+
+# Optional: lock files if you don't want to commit them (many teams still commit lock files)
+package-lock.json
