@@ -2,6 +2,10 @@
   "name": "did-webrtc-proxy",
   "version": "1.0.0",
   "description": "D-ID WebRTC signaling proxy via WebSocket",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
   "dependencies": {
     "ws": "^8.13.0",
     "dotenv": "^16.3.1"
